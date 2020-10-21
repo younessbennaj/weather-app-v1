@@ -1,7 +1,17 @@
 <template>
   <div class="container">
     <section class="sidebar">
-      <h2 class="sidebar__location"><i class="material-icons icon">location_on</i> {{town}}</h2>
+      <form class="form">
+        <select v-model="location" class="form__select" name="location" id="location">
+          <!-- <option value="nice">Nice</option>
+          <option value="lyon">Lyon</option>
+          <option value="paris">Paris</option> -->
+          <option v-for="city in cities" :key="city" value="nice">{{city}}</option>
+        </select>
+        <!-- <input class="form__input" type="text" placeholder="search location"> -->
+        <input class="form__button" type="submit" value="Search" v-on:click="refreshCurrentWeather">
+      </form>
+      <h2 class="sidebar__location"><i class="material-icons icon">location_on</i> <span class="sidebar__location-text">{{location}}</span></h2>
       <p class="sidebar__temp">{{temp}}<span class="sidebar__temp--celcius">ºC</span></p>
       <p class="sidebar__date">{{dateString}}</p>
     </section>
@@ -70,12 +80,19 @@ dateString = dateString.locale("fr").format("LL");
 
 const temp = kelvinToCelcius(data.main.temp);
 
+const cities = ["Nice", "Lyon", "Paris"];
+
 export default {
   data() {
     return {
+      location: "paris",
       temp,
       dateString,
-      town
+      cities,
+      refreshCurrentWeather: e => {
+        e.preventDefault();
+        this.temp = Math.floor(Math.random() * 40);
+      }
     };
   }
 };
@@ -102,6 +119,40 @@ $grey: #e7e7eb;
   background: #100e1d;
 }
 
+.form {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+
+  &__select {
+    display: inline-block;
+    width: 70%;
+    height: 64px;
+    border: 1px solid #616475;
+    padding-left: 12px;
+    font-size: 16px;
+    background: #1e213a;
+    color: $grey;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+
+    option {
+      height: 64px;
+    }
+  }
+
+  &__button {
+    height: 64px;
+    width: 30%;
+    font-size: 16px;
+    background-color: #3c47e9;
+    border: 1px solid #3c47e9;
+    color: $grey;
+    cursor: pointer;
+  }
+}
+
 .sidebar {
   grid-column-start: 1;
   grid-column-end: 5;
@@ -109,12 +160,17 @@ $grey: #e7e7eb;
   align-items: center;
   /* justify-content: space-around; */
   flex-direction: column;
+  padding: 0 46px;
 
   &__location {
     font-weight: 600;
     font-size: 18px;
     line-height: 21px;
     color: $light-grey;
+
+    &-text {
+      text-transform: capitalize;
+    }
 
     i {
       vertical-align: bottom;
