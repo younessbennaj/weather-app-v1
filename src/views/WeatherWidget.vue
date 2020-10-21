@@ -54,22 +54,27 @@ const data = {
   cod: 200
 };
 
-function kelvinToCelcius(temp) {
-  return Math.floor(temp - 273.15);
-}
+// function kelvinToCelcius(temp) {
+//   return Math.floor(temp - 273.15);
+// }
 
 const town = data.name;
 
 let dateString = moment.unix(data.dt);
 dateString = dateString.locale("fr").format("LL");
 
-const temp = kelvinToCelcius(data.main.temp);
+// const temp = kelvinToCelcius(data.main.temp);
 
 export default {
-  props: ["city"],
+  props: ["city", "temperature"],
+  watch: {
+    temperature: function(newVal, oldVal) {
+      this.temp = newVal;
+    }
+  },
   data() {
     return {
-      temp,
+      temp: this.temperature,
       dateString,
       location: this.city
     };

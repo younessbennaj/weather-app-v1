@@ -1,25 +1,22 @@
 <template>
     <form class="form">
         <select v-model="location" class="form__select" name="location" id="location">
-          <option v-for="city in cities" :key="city" value="nice">{{city}}</option>
+          <option v-for="city in cities" :key="city" v-bind:value="city">{{city}}</option>
         </select>
         <!-- <input class="form__input" type="text" placeholder="search location"> -->
-        <input class="form__button" type="submit" value="Search" v-on:click="refreshCurrentWeather">
+        <input class="form__button" type="submit" value="Search" v-on:click="(e) => refreshCurrentWeather(e, location)">
       </form>
 </template>
 
 <script>
-const cities = ["Nice", "Lyon", "Paris"];
+const cities = ["nice", "lyon", "paris"];
 export default {
-  props: ["city"],
+  props: ["city", "updateLocation"],
   data() {
     return {
       cities,
       location: this.city,
-      refreshCurrentWeather: e => {
-        e.preventDefault();
-        this.temp = Math.floor(Math.random() * 40);
-      }
+      refreshCurrentWeather: this.updateLocation
     };
   }
 };
@@ -49,6 +46,7 @@ $grey: #e7e7eb;
 
     option {
       height: 64px;
+      text-transform: uppercase;
     }
   }
 

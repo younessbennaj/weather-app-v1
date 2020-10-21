@@ -4,8 +4,8 @@
       <!-- <router-link to="/">Home</router-link>
       <router-link to="about">About</router-link>
       <router-view /> -->
-      <WeatherForm v-bind:city="location" />
-      <WeatherWidget v-bind:city="location"/>
+      <WeatherForm v-bind:updateLocation="refreshCurrentWeather" v-bind:city="location" />
+      <WeatherWidget v-bind:city="location" v-bind:temperature="temp"/>
     </section>
     <main class="main">
 
@@ -83,10 +83,10 @@ export default {
       temp,
       dateString,
       cities,
-      refreshCurrentWeather: e => {
+      refreshCurrentWeather: (e, location) => {
         e.preventDefault();
-        this.$router.push("/about");
         this.temp = Math.floor(Math.random() * 40);
+        console.log(location);
       }
     };
   },
