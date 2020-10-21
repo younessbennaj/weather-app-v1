@@ -86,7 +86,7 @@ export default {
       refreshCurrentWeather: (e, location) => {
         e.preventDefault();
         this.temp = Math.floor(Math.random() * 40);
-        console.log(location);
+        this.location = location;
       }
     };
   },

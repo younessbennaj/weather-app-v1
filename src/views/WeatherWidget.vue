@@ -68,8 +68,9 @@ dateString = dateString.locale("fr").format("LL");
 export default {
   props: ["city", "temperature"],
   watch: {
-    temperature: function(newVal, oldVal) {
-      this.temp = newVal;
+    city: function(newVal, oldVal) {
+      console.log(newVal, oldVal);
+      this.location = newVal;
     }
   },
   data() {
