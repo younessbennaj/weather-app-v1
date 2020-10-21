@@ -79,7 +79,8 @@ const cities = ["Nice", "Lyon", "Paris"];
 export default {
   data() {
     return {
-      location: "paris",
+      //initialized with the value of the city parameter in Url
+      location: this.$route.params.location,
       temp,
       dateString,
       cities,

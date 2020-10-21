@@ -7,7 +7,6 @@ Vue.use(Router);
 
 export default new Router({
     routes: [
-        { path: '/', name: 'home', component: App, exact: true },
-        { path: '/about', name: 'about', component: About, exact: true }
+        { path: '/currentWeather/:location', name: 'currentWeather', component: App, exact: true }
     ]
 })

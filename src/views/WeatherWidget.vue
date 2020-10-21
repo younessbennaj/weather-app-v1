@@ -1,8 +1,8 @@
 <template>
     <div class="widget">
-        <h2 class="widget__location"><i class="material-icons icon">location_on</i> <span class="sidebar__location-text">{{location}}</span></h2>
         <p class="widget__temp">{{temp}}<span class="widget__temp--celcius">ºC</span></p>
         <p class="widget__date">{{dateString}}</p>
+        <h2 class="widget__location"><i class="material-icons icon">location_on</i> <span class="sidebar__location-text">{{location}}</span></h2>
     </div>
 </template>
 
