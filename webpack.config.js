@@ -12,6 +12,10 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.vue$/,
+                loader: 'vue-loader'
+            },
+            {
                 test: /\.m?js$/,
                 exclude: /(node_modules|bower_components)/,
                 use: {
@@ -22,8 +26,13 @@ module.exports = {
                 }
             },
             {
-                test: /\.vue$/,
-                loader: 'vue-loader'
+                test: /\.scss$/,
+                use: [
+                    'vue-style-loader',
+                    'style-loader',
+                    'css-loader',
+                    'sass-loader'
+                ]
             }
         ]
     },
