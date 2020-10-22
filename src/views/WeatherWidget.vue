@@ -24,9 +24,9 @@ export default {
   data() {
     return {
       //temp local state initialized with the weather data prop object
-      temp: null,
+      temp: this.weather.temp,
       //same for the date local state
-      date: null,
+      date: this.weather.date,
       //location is initialized with the city prop passed from the parent component
       location: this.city
     };

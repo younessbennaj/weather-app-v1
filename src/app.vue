@@ -40,119 +40,55 @@ function formatData(data) {
   };
 }
 
-let getWeatherData = () => {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(
-        "http://api.openweathermap.org/data/2.5/weather?q=paris&appid=d8226f44f17257daa0c78241180a1474"
-      )
-      .then(response => {
-        const date = formatData(response.data).date;
-        const temp = formatData(response.data).temp;
-        const cities = ["Nice", "Lyon", "Paris"];
-
-        resolve({
-          date,
-          temp,
-          cities
-        });
-      });
-  });
-};
-
-const data = {
-  coord: {
-    lon: 2.35,
-    lat: 48.85
-  },
-  weather: [
-    {
-      id: 804,
-      main: "Clouds",
-      description: "overcast clouds",
-      icon: "04d"
-    }
-  ],
-  base: "stations",
-  main: {
-    temp: 291.2,
-    feels_like: 285.68,
-    temp_min: 290.15,
-    temp_max: 292.59,
-    pressure: 999,
-    humidity: 67
-  },
-  visibility: 10000,
-  wind: {
-    speed: 8.7,
-    deg: 170,
-    gust: 14.9
-  },
-  clouds: {
-    all: 100
-  },
-  dt: 1603269927,
-  sys: {
-    type: 1,
-    id: 6550,
-    country: "FR",
-    sunrise: 1603261227,
-    sunset: 1603298974
-  },
-  timezone: 7200,
-  id: 2988507,
-  name: "Paris",
-  cod: 200
-};
-
-// let dateString = moment.unix(data.dt);
-// dateString = dateString.locale("fr").format("LL");
-
-// const temp = kelvinToCelcius(data.main.temp);
-
-// const cities = ["Nice", "Lyon", "Paris"];
-
 export default {
   mounted() {
-    //The component instance is mounted and accessible in the DOM tree
-    axios
-      .get(
-        "http://api.openweathermap.org/data/2.5/weather?q=paris&appid=d8226f44f17257daa0c78241180a1474"
-      )
-      .then(response => {
-        //Parse our response to return data in correct format for the view
-        this.weatherData = {
-          //Hold the temperature in Celcius
-          temp: formatData(response.data).temp,
-          //Set date prop in the correct fomat fr
-          date: formatData(response.data).date
-        };
-      });
+    //Called the first time the component is mouted
+    this.getData();
   },
-  // methods: {
-  //   // a computed getter
-  //   getData: function() {
-  //     console.log("called");
-  //     var vm = this;
-  //     axios
-  //       .get(
-  //         "http://api.openweathermap.org/data/2.5/weather?q=paris&appid=d8226f44f17257daa0c78241180a1474"
-  //       )
-  //       .then(function(response) {
-  //         vm.date = formatData(response.data).date;
-  //         vm.temp = formatData(response.data).temp;
-  //         vm.cities = ["Nice", "Lyon", "Paris"];
-  //       });
-  //   }
-  // },
+  watch: {
+    location: function() {
+      //Each time the location is updated, when need to fetch the data from API
+      this.getData();
+    }
+  },
+  methods: {
+    getData: function() {
+      //this method is called when we need to retrieve the weather data
+      //for a precise location
+      axios
+        .get(
+          `http://api.openweathermap.org/data/2.5/weather?q=${
+            this.location
+          }&appid=d8226f44f17257daa0c78241180a1474`
+        )
+        .then(response => {
+          //Set the new weather data to data local state
+          this.data = response.data;
+        });
+    }
+  },
+  computed: {
+    weatherData: function() {
+      // Here, this.data is our declarative dependencies
+      // Each time this.data change, weatherData is re-computed
+      //NO ASYNC CODE HERE => put it in a method
+      return {
+        //Hold the temperature in Celcius
+        temp: this.data ? formatData(this.data).temp : null,
+        //Set date prop in the correct fomat fr
+        date: this.data ? formatData(this.data).date : null
+      };
+    }
+  },
   data() {
     return {
+      data: null,
       //The list of cities avaible in the select input
       cities: ["Nice", "Lyon", "Paris"],
       //initialized with the value of the city parameter in Url
       location: this.$route.params.location,
       //Set when the component is mounted
-      weatherData: null,
+      // weatherData: null,
       refreshCurrentWeather: (e, location) => {
         e.preventDefault();
         this.temp = Math.floor(Math.random() * 40);

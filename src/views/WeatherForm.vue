@@ -30,6 +30,7 @@ $grey: #e7e7eb;
   width: 100%;
   display: flex;
   justify-content: flex-start;
+  padding-top: 40px;
 
   &__select {
     display: inline-block;
