@@ -1,11 +1,13 @@
 <template>
+  <!-- Template need to be simple and declarative => no complex operation here -->
+  <!-- => just display data to users -->
   <div class="container">
     <section class="sidebar">
       <!-- <router-link to="/">Home</router-link>
       <router-link to="about">About</router-link>
       <router-view /> -->
       <WeatherForm v-bind:updateLocation="refreshCurrentWeather" v-bind:city="location" />
-      <WeatherWidget v-bind:city="location" v-bind:temperature="temp"/>
+      <WeatherWidget v-bind:weather="weatherData" v-bind:city="location"/>
     </section>
     <main class="main">
 
@@ -15,8 +17,48 @@
 
 <script>
 import moment from "moment";
+import axios from "axios";
 import WeatherForm from "./views/WeatherForm.vue";
 import WeatherWidget from "./views/WeatherWidget.vue";
+
+//Convert Kelvin in Celcius, needed due to the api return temperature in Kelvin
+function kelvinToCelcius(temp) {
+  return Math.floor(temp - 273.15);
+}
+
+//Convert unix timestamp to fr date
+function unixToFrDate(date) {
+  let dateString = moment.unix(date);
+  return dateString.locale("fr").format("LL");
+}
+
+function formatData(data) {
+  return {
+    town: data.name,
+    date: unixToFrDate(data.dt),
+    temp: kelvinToCelcius(data.main.temp)
+  };
+}
+
+let getWeatherData = () => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(
+        "http://api.openweathermap.org/data/2.5/weather?q=paris&appid=d8226f44f17257daa0c78241180a1474"
+      )
+      .then(response => {
+        const date = formatData(response.data).date;
+        const temp = formatData(response.data).temp;
+        const cities = ["Nice", "Lyon", "Paris"];
+
+        resolve({
+          date,
+          temp,
+          cities
+        });
+      });
+  });
+};
 
 const data = {
   coord: {
@@ -63,27 +105,54 @@ const data = {
   cod: 200
 };
 
-function kelvinToCelcius(temp) {
-  return Math.floor(temp - 273.15);
-}
+// let dateString = moment.unix(data.dt);
+// dateString = dateString.locale("fr").format("LL");
 
-const town = data.name;
+// const temp = kelvinToCelcius(data.main.temp);
 
-let dateString = moment.unix(data.dt);
-dateString = dateString.locale("fr").format("LL");
-
-const temp = kelvinToCelcius(data.main.temp);
-
-const cities = ["Nice", "Lyon", "Paris"];
+// const cities = ["Nice", "Lyon", "Paris"];
 
 export default {
+  mounted() {
+    //The component instance is mounted and accessible in the DOM tree
+    axios
+      .get(
+        "http://api.openweathermap.org/data/2.5/weather?q=paris&appid=d8226f44f17257daa0c78241180a1474"
+      )
+      .then(response => {
+        //Parse our response to return data in correct format for the view
+        this.weatherData = {
+          //Hold the temperature in Celcius
+          temp: formatData(response.data).temp,
+          //Set date prop in the correct fomat fr
+          date: formatData(response.data).date
+        };
+      });
+  },
+  // methods: {
+  //   // a computed getter
+  //   getData: function() {
+  //     console.log("called");
+  //     var vm = this;
+  //     axios
+  //       .get(
+  //         "http://api.openweathermap.org/data/2.5/weather?q=paris&appid=d8226f44f17257daa0c78241180a1474"
+  //       )
+  //       .then(function(response) {
+  //         vm.date = formatData(response.data).date;
+  //         vm.temp = formatData(response.data).temp;
+  //         vm.cities = ["Nice", "Lyon", "Paris"];
+  //       });
+  //   }
+  // },
   data() {
     return {
+      //The list of cities avaible in the select input
+      cities: ["Nice", "Lyon", "Paris"],
       //initialized with the value of the city parameter in Url
       location: this.$route.params.location,
-      temp,
-      dateString,
-      cities,
+      //Set when the component is mounted
+      weatherData: null,
       refreshCurrentWeather: (e, location) => {
         e.preventDefault();
         this.temp = Math.floor(Math.random() * 40);

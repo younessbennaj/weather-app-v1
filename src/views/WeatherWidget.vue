@@ -1,82 +1,33 @@
 <template>
     <div class="widget">
         <p class="widget__temp">{{temp}}<span class="widget__temp--celcius">ºC</span></p>
-        <p class="widget__date">{{dateString}}</p>
+        <p class="widget__date">{{date}}</p>
         <h2 class="widget__location"><i class="material-icons icon">location_on</i> <span class="sidebar__location-text">{{location}}</span></h2>
     </div>
 </template>
 
 <script>
-import moment from "moment";
-
-const data = {
-  coord: {
-    lon: 2.35,
-    lat: 48.85
-  },
-  weather: [
-    {
-      id: 804,
-      main: "Clouds",
-      description: "overcast clouds",
-      icon: "04d"
-    }
-  ],
-  base: "stations",
-  main: {
-    temp: 291.2,
-    feels_like: 285.68,
-    temp_min: 290.15,
-    temp_max: 292.59,
-    pressure: 999,
-    humidity: 67
-  },
-  visibility: 10000,
-  wind: {
-    speed: 8.7,
-    deg: 170,
-    gust: 14.9
-  },
-  clouds: {
-    all: 100
-  },
-  dt: 1603269927,
-  sys: {
-    type: 1,
-    id: 6550,
-    country: "FR",
-    sunrise: 1603261227,
-    sunset: 1603298974
-  },
-  timezone: 7200,
-  id: 2988507,
-  name: "Paris",
-  cod: 200
-};
-
-// function kelvinToCelcius(temp) {
-//   return Math.floor(temp - 273.15);
-// }
-
-const town = data.name;
-
-let dateString = moment.unix(data.dt);
-dateString = dateString.locale("fr").format("LL");
-
-// const temp = kelvinToCelcius(data.main.temp);
-
 export default {
-  props: ["city", "temperature"],
+  //city: props to init the location
+  props: ["city", "weather"],
   watch: {
+    //Watch if the city prop change over the time
     city: function(newVal, oldVal) {
-      console.log(newVal, oldVal);
+      //Set location local state to the new value of this prop
       this.location = newVal;
+    },
+    weather: function(newVal, oldVal) {
+      this.temp = newVal.temp;
+      this.date = newVal.date;
     }
   },
   data() {
     return {
-      temp: this.temperature,
-      dateString,
+      //temp local state initialized with the weather data prop object
+      temp: null,
+      //same for the date local state
+      date: null,
+      //location is initialized with the city prop passed from the parent component
       location: this.city
     };
   }
