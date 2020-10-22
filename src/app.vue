@@ -8,6 +8,7 @@
       <router-view /> -->
       <WeatherForm v-bind:updateLocation="refreshCurrentWeather" v-bind:city="location" />
       <WeatherWidget v-bind:weather="weatherData" v-bind:city="location"/>
+      <p v-if="error" class="error">{{error}}</p>
     </section>
     <main class="main">
 
@@ -61,10 +62,16 @@ export default {
             this.location
           }&appid=d8226f44f17257daa0c78241180a1474`
         )
-        .then(response => {
-          //Set the new weather data to data local state
-          this.data = response.data;
-        });
+        .then(
+          response => {
+            //Set the new weather data to data local state
+            this.data = response.data;
+            this.error = null;
+          },
+          error => {
+            this.error = "Impossible de récupérer la méteo";
+          }
+        );
     }
   },
   computed: {
@@ -82,6 +89,7 @@ export default {
   },
   data() {
     return {
+      error: null,
       data: null,
       //The list of cities avaible in the select input
       cities: ["Nice", "Lyon", "Paris"],
@@ -118,44 +126,14 @@ $grey: #e7e7eb;
   grid-template-columns: repeat(12, 1fr);
 }
 
+.error {
+  color: red;
+}
+
 .main {
   grid-column-start: 5;
   grid-column-end: -1;
   background: #100e1d;
-}
-
-.form {
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-
-  &__select {
-    display: inline-block;
-    width: 70%;
-    height: 64px;
-    border: 1px solid #616475;
-    padding-left: 12px;
-    font-size: 16px;
-    background: #1e213a;
-    color: $grey;
-    appearance: none;
-    -moz-appearance: none;
-    -webkit-appearance: none;
-
-    option {
-      height: 64px;
-    }
-  }
-
-  &__button {
-    height: 64px;
-    width: 30%;
-    font-size: 16px;
-    background-color: #3c47e9;
-    border: 1px solid #3c47e9;
-    color: $grey;
-    cursor: pointer;
-  }
 }
 
 .sidebar {
