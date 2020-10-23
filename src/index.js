@@ -1,8 +1,23 @@
 import Vue from 'vue';
+import VueRouter from 'vue-router';
 import App from './app.vue';
-import router from './router';
+import Bar from './views/Bar.vue';
+import Foo from './views/Foo.vue';
+import ForecastChart from './views/ForecastChart.vue'
+
+Vue.use(VueRouter);
+
+const router = new VueRouter({
+    routes: [
+        { path: '/currentWeather/:location', component: Foo },
+        { path: '/forecastChart/:location', component: ForecastChart }
+    ]
+})
+
 
 new Vue({
+    el: '#app',
     router,
-    render: h => h(App)
-}).$mount('#app');
+    template: '<App/>',
+    components: { App }
+})

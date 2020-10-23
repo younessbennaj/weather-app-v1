@@ -3,15 +3,14 @@
   <!-- => just display data to users -->
   <div class="container">
     <section class="sidebar">
-      <!-- <router-link to="/">Home</router-link>
-      <router-link to="about">About</router-link>
-      <router-view /> -->
       <WeatherForm v-bind:updateLocation="refreshCurrentWeather" v-bind:city="location" />
       <WeatherWidget v-bind:weather="weatherData" v-bind:city="location"/>
       <p v-if="error" class="error">{{error}}</p>
     </section>
     <main class="main">
-
+      <router-link to="/currentWeather/lyon">Home</router-link>
+      <router-link to="/forecastChart/lyon">Forecast</router-link>
+      <router-view />
     </main>
   </div>
 </template>
@@ -88,6 +87,7 @@ export default {
     }
   },
   data() {
+    console.log(this.$router);
     return {
       error: null,
       data: null,

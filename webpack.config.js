@@ -1,5 +1,8 @@
 const path = require("path");
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const { devDependencies } = require('./package.json');
+
+let whiteListedModules = ['vue', 'vue-router']
 
 module.exports = {
     mode: 'development',
@@ -9,11 +12,21 @@ module.exports = {
         path: path.resolve(__dirname, "dist"),
         filename: "bundle.js"
     },
+    resolve: {
+        alias: {
+            'vue$': 'vue/dist/vue.esm.js' // 'vue/dist/vue.common.js' for webpack 1
+        },
+        extensions: ['*', '.js', '.vue', '.json']
+    },
+    externals: [
+        ...Object.keys(devDependencies || {}).filter(d => !whiteListedModules.includes(d))
+    ],
     module: {
         rules: [
             {
                 test: /\.vue$/,
-                loader: 'vue-loader'
+                loader: 'vue-loader',
+
             },
             {
                 test: /\.m?js$/,
@@ -36,6 +49,10 @@ module.exports = {
             }
         ]
     },
+    performance: {
+        hints: false
+    },
+    devtool: '#eval-source-map',
     plugins: [
         new VueLoaderPlugin()
     ]
